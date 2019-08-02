@@ -2,25 +2,22 @@
 '''thrust_control ROS Node'''
 import rospy
 from std_msgs.msg import Float64
-import RPi.GPIO as GPIO
+import pigpio
 import time
-GPIO.setmode(GPIO.BOARD)
-GPIO.setup(40,GPIO.OUT)  #根据实际连接接口确定
-eve=GPIO.PWM(40,50)      #输出频率
-eve.start(2.5)           #初始转速
-
+pi = pigpio.pi()
+pi.set_PWM_frequency(23,50)
+pi.set_PWM_range(23,20000)
 
 def callback(data):
     '''thrust_control Callback Function'''
     rospy.loginfo(rospy.get_caller_id() + "I heard %s", data.data)
     try:
         while Ture:
-            eve.ChangeDutyCycle(data.data)
+            pi.set_PWM_dutycycle(23,data.data)
 
     except:
         pass
-    eve.stop()
-    GPIO.cleanup
+    pi.stop()
 
 def listener():
     '''thrust_control Subscriber'''
